@@ -1,0 +1,232 @@
+/*
+  Base styles for the Czyste Powietrze calculator.  The
+  layout is intentionally simple so that the application is easy to
+  follow and modify.  Feel free to adjust paddings and colours to
+  better match your own branding.
+*/
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  /* Soft gradient background for a more modern feel */
+  background: linear-gradient(135deg, #f5fafe 0%, #eef3fc 100%);
+  color: #333;
+}
+
+/* Headings styling for improved readability */
+h1 {
+  color: #0b3c5d;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+h2 {
+  margin-top: 1.5rem;
+  color: #0b3c5d;
+}
+
+h3 {
+  margin-top: 1rem;
+  color: #006699;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  line-height: 1.4;
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 1.6rem;
+}
+
+fieldset {
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #e0e6f0;
+  border-radius: 8px;
+  background: #f9fbfc;
+}
+
+/* Alternate shading for fieldsets to visually separate sections */
+fieldset:nth-of-type(odd) {
+  background: #f3f8fe;
+}
+
+/* Grid layout for the beneficiary form to improve interactivity */
+.beneficiary-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+legend {
+  font-weight: 600;
+  padding: 0 5px;
+  color: #0b3c5d;
+  margin-bottom: 0.5rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+label input,
+label select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 4px;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+}
+
+table th,
+table td {
+  border: 1px solid #ddd;
+  padding: 6px;
+  text-align: left;
+}
+
+table th {
+  /* Soft blue header for readability */
+  background: #e6f0ff;
+  color: #0b3c5d;
+  font-weight: 600;
+}
+
+/* Alternate row shading */
+table tbody tr:nth-child(odd) {
+  background: #fafafa;
+}
+
+table tbody tr:hover {
+  background: #f1f9ff;
+}
+
+/* Highlight inputs and selects on focus for better interactivity */
+input:focus,
+select:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+.actions {
+  text-align: center;
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+/* Secondary button style (e.g. export to PDF) */
+.btn-secondary {
+  background: #6c757d;
+  color: #fff;
+  margin-left: 10px;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+}
+
+/* Print styles: show only the results section when printing */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .results,
+  .results * {
+    visibility: visible;
+  }
+  .results {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: #fff;
+    padding: 20px;
+  }
+
+  /* Set A4 landscape to ensure the table fits on a single page width */
+  @page {
+    /* Increase available width by reducing margins and allow the
+       browser to scale the content when saving to PDF. */
+    size: A4 landscape;
+    margin: 0.5cm;
+  }
+
+  /* Reduce font size for tables in print to improve fit */
+  .results table {
+    font-size: 0.65rem;
+    width: 100%;
+  }
+
+  .results table th,
+  .results table td {
+    padding: 4px;
+  }
+
+  .results h2,
+  .results h3 {
+    font-size: 1.1rem;
+  }
+}
+
+.results {
+  margin-top: 40px;
+}
+
+.warning {
+  background: #fff3cd;
+  padding: 10px;
+  border: 1px solid #ffeeba;
+  border-radius: 4px;
+  color: #856404;
+}
+
+/* Beneficiary info styling */
+.beneficiary {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+/* Style summary table within results */
+.results table tbody tr th {
+  width: 60%;
+  text-align: left;
+  background: #eef7ff;
+}
+
+.results table tbody tr td {
+  text-align: right;
+}

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { jsPDF } from "jspdf";
+
 
 /*
  * Data definitions based on publicly available information about the
@@ -92,6 +94,8 @@ function parseDecimal(value) {
   const parsed = parseFloat(norm);
   return isNaN(parsed) ? 0 : parsed;
 }
+
+
 
 function determineSupportLevel({ income, people, energy, fullThermo }) {
   // Convert input values to numeric form, accepting comma as decimal
@@ -250,7 +254,64 @@ export default function App() {
     people: 1,
     replaceHeat: 'no',
     fullThermo: 'no',
-  });
+  }
+)
+ function exportResultsToPDF() {
+    if (!results) return;
+    const doc = new jsPDF();
+    let y = 10;
+    doc.setFontSize(16);
+    doc.text("Kalkulator programu „Czyste Powietrze 2025”", 10, y);
+    y += 10;
+    doc.setFontSize(12);
+    doc.text(`Beneficjent: ${form.name}, ${form.address}`, 10, y);
+    y += 10;
+    doc.text(
+      `Poziom dofinansowania: ${
+        supportLevel === "highest"
+          ? "Najwyższy – do 100 % netto"
+          : supportLevel === "increased"
+          ? "Podwyższony – do 70 %"
+          : "Podstawowy – do 40 %"
+      }`,
+      10,
+      y
+    );
+    y += 10;
+
+    // Dodaj podsumowanie
+    doc.text(`Kwota netto inwestycji: ${results.totals.net.toFixed(2)} zł`, 10, y); y += 7;
+    doc.text(`VAT: ${results.totals.vat.toFixed(2)} zł`, 10, y); y += 7;
+    doc.text(`Kwota brutto inwestycji: ${results.totals.gross.toFixed(2)} zł`, 10, y); y += 7;
+    doc.text(`Dofinansowanie: ${results.totals.grant.toFixed(2)} zł`, 10, y); y += 7;
+    doc.text(`Kwota dopłaty beneficjenta: ${results.totals.beneficiary.toFixed(2)} zł`, 10, y); y += 10;
+
+    // Dodaj tabele z kategoriami (tylko podsumowanie, uproszczone)
+    const addCategory = (title, data) => {
+      if (!data || !data.rows || data.rows.length === 0) return;
+      doc.setFontSize(12);
+      doc.text(title, 10, y); y += 7;
+      data.rows.forEach(row => {
+        doc.text(
+          `${row.name}: ilość ${row.quantity}, netto ${row.costNet.toFixed(2)} zł, VAT ${row.vatAmount.toFixed(2)} zł, brutto ${row.gross.toFixed(2)} zł, dofinansowanie ${row.grant.toFixed(2)} zł, dopłata ${row.beneficiary.toFixed(2)} zł`,
+          10,
+          y
+        );
+        y += 7;
+        if (y > 280) { doc.addPage(); y = 10; }
+      });
+      y += 3;
+    };
+
+    addCategory("Dokumentacja", results.docs);
+    if (form.replaceHeat === 'yes') addCategory("Wymiana źródła ciepła", results.heat);
+    if (form.fullThermo === 'yes') {
+      addCategory("Prace termomodernizacyjne", results.thermo);
+      addCategory("Modernizacja systemu wentylacji", results.vent);
+    }
+
+    doc.save("kalkulator_czyste_powietrze.pdf");
+  };
 
   // Entry states for each category.  Objects keyed by item id.
   const initEntries = items => {
@@ -744,20 +805,27 @@ export default function App() {
             {/* Use window.print() for PDF export.  During print only the
                 .results section will be visible thanks to CSS rules. */}
             <button
-              type="button"
-              className="btn-secondary"
-              onClick={() => {
-                // Open the browser print dialog so the user can choose
-                // "Save as PDF".  The CSS print rules ensure the
-                // results are formatted correctly.
-                window.print();
-              }}
-            >
-              Zapisz jako PDF
-            </button>
+    type="button"
+    className="btn-secondary"
+    onClick={exportResultsToPDF}
+  >
+    Eksportuj do PDF
+  </button>
+  <button
+    type="button"
+    className="btn-secondary"
+    onClick={() => {
+      window.print();
+    }}
+  >
+    Zapisz jako PDF
+  </button>
           </div>
         </div>
       )}
     </div>
+    
   );
+  
+  
 }
